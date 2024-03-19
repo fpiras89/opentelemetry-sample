@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
   removeTodo(todo: ToDo) {
     this.otel
       .withSpan(
-        "add",
+        "remove",
         this.http.delete<boolean>(`http://localhost:5000/api/todo/${todo.id}`),
       )
       .subscribe({
@@ -95,7 +95,7 @@ export class AppComponent implements OnInit {
   updateTodo(todo: ToDo) {
     this.otel
       .withSpan(
-        "add",
+        "update",
         this.http.put<ToDo>("http://localhost:5000/api/todo", {
           ...todo,
           done: true,
