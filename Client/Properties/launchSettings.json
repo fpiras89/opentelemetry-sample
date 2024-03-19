@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Examples.Client": {
+      "commandName": "Project",
+      "commandLineArgs": "http://localhost:5000"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

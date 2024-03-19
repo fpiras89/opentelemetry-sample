@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "serviceActions": {
+        "service": "StartDebugging",
+        "client": "StartDebugging",
+        "grafana": "StartWithoutDebugging",
+        "loki": "StartWithoutDebugging",
+        "otel-collector": "StartWithoutDebugging",
+        "prometheus": "StartWithoutDebugging",
+        "sqlserver": "StartWithoutDebugging",
+        "tempo": "StartWithoutDebugging"
+      }
+    }
+  }
+}
