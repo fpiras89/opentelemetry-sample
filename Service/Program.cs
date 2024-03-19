@@ -9,6 +9,8 @@ builder.Services.AddCors(o =>
     o.AddDefaultPolicy(p =>
     {
         p.AllowAnyOrigin();
+        p.AllowAnyHeader();
+        p.AllowAnyMethod();
     });
 });
 builder.Services.AddHttpContextAccessor();
@@ -16,7 +18,7 @@ builder.Host.UseSerilog((context, loggerConfig) => {
     loggerConfig.ReadFrom.Configuration(context.Configuration);
     loggerConfig.WriteTo.Console(
         formatter: new LogfmtFormatter(opt => opt
-            .IncludeAllProperties()
+            //.IncludeAllProperties()
             .OnException(e => e
                 // Log full stack trace
                 .LogStackTrace(LogfmtStackTraceFormat.SingleLine)))
@@ -31,5 +33,6 @@ app.UseSerilogRequestLogging();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapSampleApi();
+    endpoints.MapToDoApi();
 });
 app.Run();
