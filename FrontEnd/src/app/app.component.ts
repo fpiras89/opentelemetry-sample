@@ -5,6 +5,7 @@ import { RouterOutlet } from "@angular/router";
 import { MatSnackBar, MatSnackBarModule } from "@angular/material/snack-bar";
 import { OpenTelemetryModule } from "./shared/modules/open-telemetry/open-telemetry.module";
 import { BehaviorSubject } from "rxjs";
+import { OpenTelemetryService } from "./shared/modules/open-telemetry/open-telemetry.service";
 
 @Component({
   selector: "app-root",
@@ -18,20 +19,26 @@ export class AppComponent {
   todosSubject = new BehaviorSubject<{ text: string; done: boolean }[]>([]);
   todos$ = this.todosSubject.asObservable();
 
-  constructor(private http: HttpClient, private snackBar: MatSnackBar) {}
+  constructor(
+    private http: HttpClient,
+    private snackBar: MatSnackBar,
+    private otel: OpenTelemetryService,
+  ) {}
 
   addTodo(newTodo: string) {
-    this.http.get("http://localhost:5000").subscribe({
-      next: () => {
-        const list = this.todosSubject.value;
-        this.todosSubject.next([...list, { text: newTodo, done: false }]);
-      },
-      error: (error: any) => {
-        console.log(error);
-        this.snackBar.open(error.message, "OK", {
-          duration: 5 * 1000,
-        });
-      },
-    });
+    this.otel
+      .withSpan("get", this.http.get("http://localhost:5000"))
+      .subscribe({
+        next: () => {
+          const list = this.todosSubject.value;
+          this.todosSubject.next([...list, { text: newTodo, done: false }]);
+        },
+        error: (error: any) => {
+          console.log(error);
+          this.snackBar.open(error.message, "OK", {
+            duration: 5 * 1000,
+          });
+        },
+      });
   }
 }

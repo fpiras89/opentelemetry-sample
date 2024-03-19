@@ -54,14 +54,26 @@ export class OpenTelemetryService {
     this.context.with(this.trace.setSpan(this.activeContext, span), fn);
   }
 
-  withSpan(src: Promise<any> | Observable<any>) {
-    return new Observable((o) => {
+  withSpan<T>(name: string, src: Promise<T> | Observable<T>): Observable<T> {
+    return new Observable<T>((observable) => {
       let subscription: Subscription;
-      const singleSpan = this.getTracer().startSpan("start");
-      context.with(trace.setSpan(context.active(), singleSpan), () => {
-        subscription = from(src).subscribe((_data) => {
-          this.trace.getSpan(this.activeContext)?.addEvent("completed");
-          singleSpan.end();
+      const singleSpan = this.getTracer().startSpan(name);
+      singleSpan.addEvent("start");
+      context.with(trace.setSpan(this.activeContext, singleSpan), () => {
+        subscription = from(src).subscribe({
+          next: (data) => {
+            singleSpan.addEvent("next");
+            observable.next(data);
+          },
+          complete: () => {
+            singleSpan.addEvent("completed");
+            singleSpan.end();
+            observable.complete();
+          },
+          error: (err?: any) => {
+            singleSpan.addEvent("error");
+            observable.error(err);
+          },
         });
       });
       return () => subscription?.unsubscribe();
