@@ -2,13 +2,13 @@ using Microsoft.Data.SqlClient;
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
 
-namespace Examples.Service.Endpoints;
+namespace Examples.Service.Presentation.Endpoints;
 
 public static class SampleEndpoints
 {
     public static IEndpointRouteBuilder MapSampleApi(this IEndpointRouteBuilder builder, string prefix = "/")
     {
-        builder.MapGet(prefix, async Task<IResult>(ILogger<Program> logger, IHttpContextAccessor httpContextAccessor) => 
+        builder.MapGet(prefix, async Task<IResult> (ILogger<Program> logger, IHttpContextAccessor httpContextAccessor) =>
         {
             try
             {
@@ -59,7 +59,7 @@ public static class SampleEndpoints
 
     private static async Task ExecuteSql(string sql)
     {
-        var connectionString = System.Environment.GetEnvironmentVariable("DB_CONNECTION");
+        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
         using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
         using var command = new SqlCommand(sql, connection);

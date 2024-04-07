@@ -1,9 +1,46 @@
-using Examples.Service.Endpoints;
+using Examples.Service.Domain.Interfaces;
+using Examples.Service.Infrastructure;
+using Examples.Service.Persistence;
+using Examples.Service.Persistence.Repositories;
+using Examples.Service.Presentation.Endpoints;
+using Examples.Service.Presentation.GraphQL;
+using GraphQL;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Logfmt;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(b => b
+    .UseSqlServer(builder.Configuration.GetValue<string>("DB_CONNECTION"), options => 
+    {
+        options.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
+    }));
+builder.Services.AddScoped<IDbContext>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
 builder.Services.AddRouting();
+
+builder.Services.AddGraphQL(b => b
+    .AddNewtonsoftJson()
+    .AddErrorInfoProvider(options => options.ExposeExceptionDetails = true)
+    .UseApolloTracing()
+    .ConfigureExecutionOptions(options =>
+    {
+        var logger = options.RequestServices.GetRequiredService<ILogger<Program>>();
+        options.UnhandledExceptionDelegate = ctx =>
+        {
+            logger.LogError("GraphQL Unhandled Exception: {ErrorMessage} | {OriginalExceptionMessage}", ctx.ErrorMessage, ctx.OriginalException.Message);
+            return Task.CompletedTask;
+        };
+    }))
+    .AddGraphQLConventions<Query, Mutation>();
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.AllowSynchronousIO = true;
+});
+
 builder.Services.AddCors(o =>
 {
     o.AddDefaultPolicy(p =>
@@ -13,7 +50,9 @@ builder.Services.AddCors(o =>
         p.AllowAnyMethod();
     });
 });
+
 builder.Services.AddHttpContextAccessor();
+
 builder.Host.UseSerilog((context, loggerConfig) => {
     loggerConfig.ReadFrom.Configuration(context.Configuration);
     loggerConfig.WriteTo.Console(
@@ -25,6 +64,8 @@ builder.Host.UseSerilog((context, loggerConfig) => {
     );
 });
 
+builder.Services.AddScoped<ToDoRepository>();
+builder.Services.AddHostedService<MigrationsHostedService>();
 
 var app = builder.Build();
 app.UseRouting();
@@ -32,6 +73,8 @@ app.UseCors();
 app.UseSerilogRequestLogging();
 app.UseEndpoints(endpoints =>
 {
+    endpoints.MapGraphQL("graphql");
+    endpoints.MapGraphQLPlayground("graphql/playground");
     endpoints.MapSampleApi();
     endpoints.MapToDoApi();
 });

@@ -24,7 +24,7 @@ services:
       - otel-dotnet.env # enable OpenTelemetry .NET Automatic Instrumentation
     environment:
       ASPNETCORE_URLS: http://*:5000/
-      DB_CONNECTION: "Server=sqlserver,1433;User=sa;Password=yourStrong(!)Password;TrustServerCertificate=True;"
+      DB_CONNECTION: "Server=sqlserver,1433;User=sa;Password=Password1!;TrustServerCertificate=True;"
       # OpenTelemetry environmental variables:
       OTEL_SERVICE_NAME: "service"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
@@ -37,12 +37,15 @@ services:
       - otel-collector
 
   sqlserver:
-    image: mcr.microsoft.com/mssql/server:2019-CU17-ubuntu-20.04
+    image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       - ACCEPT_EULA=Y
-      - SA_PASSWORD=yourStrong(!)Password
+      - MSSQL_SA_PASSWORD=Password1!
+      - MSSQL_PID=Developer
     ports:
       - "1433:1433"
+    volumes:
+     - sqlserver-data:/var/opt/mssql
 
   # OpenTelemetry Collector
   otel-collector:
@@ -103,4 +106,6 @@ services:
       GF_FEATURE_TOGGLES_ENABLE: traceqlEditor
     ports:
       - "3000:3000"
-
+    
+volumes:
+  sqlserver-data:
