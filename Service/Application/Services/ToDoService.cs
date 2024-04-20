@@ -18,13 +18,14 @@ namespace Examples.Service.Application.Services
             this.mapper = mapper;
         }
 
-        public Task<TodoDto> AddAsync(TodoDto todo)
+        public async Task<TodoDto> AddAsync(TodoDto todo)
         {
             todo.Id = todo.Id ?? Guid.NewGuid();
             todo.CreateDate = DateTime.Now;
             todo.UpdateDate = DateTime.Now;
             dbContext.Add(mapper.Map<TodoEntity>(todo));
-            return Task.FromResult(todo);
+            await dbContext.SaveChangesAsync();
+            return todo;
         }
 
         public Task<TodoDto> GetAsync(Guid id)

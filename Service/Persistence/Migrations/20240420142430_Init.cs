@@ -21,7 +21,7 @@ namespace Examples.Service.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AppToDos", x => x.Id);
+                    table.PrimaryKey("PK_AppTodos", x => x.Id);
                 });
         }
 

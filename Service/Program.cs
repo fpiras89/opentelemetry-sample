@@ -12,7 +12,7 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(b => b
-    .UseSqlServer(builder.Configuration.GetValue<string>("DB_CONNECTION"), options => 
+    .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), options => 
     {
         options.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
     }));
@@ -70,6 +70,9 @@ builder.Services.AddHostedService<MigrationsHostedService>();
 
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>();
+
 var app = builder.Build();
 app.UseSerilogRequestLogging();
 app.UseRouting();
@@ -80,5 +83,6 @@ app.UseEndpoints(endpoints =>
     endpoints.MapGraphQLPlayground("graphql/playground");
     endpoints.MapSampleApi();
     endpoints.MapToDoApi();
+    endpoints.MapHealthChecks("/health");
 });
 app.Run();

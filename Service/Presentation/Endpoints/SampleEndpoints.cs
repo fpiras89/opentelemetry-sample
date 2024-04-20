@@ -8,7 +8,7 @@ public static class SampleEndpoints
 {
     public static IEndpointRouteBuilder MapSampleApi(this IEndpointRouteBuilder builder, string prefix = "/")
     {
-        builder.MapGet(prefix, async Task<IResult> (ILogger<Program> logger, IHttpContextAccessor httpContextAccessor) =>
+        builder.MapGet(prefix, async Task<IResult> (ILogger<Program> logger, IHttpContextAccessor httpContextAccessor, IConfiguration configuration) =>
         {
             try
             {
@@ -19,7 +19,7 @@ public static class SampleEndpoints
                 using var meter = new Meter("Examples.Service", "1.0");
                 var successCounter = meter.CreateCounter<long>("srv.successes.count", description: "Number of successful responses");
 
-                await ExecuteSql("SELECT 1");
+                await ExecuteSql(configuration, "SELECT 1");
 
                 // .NET Diagnostics: create a manual span
                 using (var activity = activitySource.StartActivity("SayHello"))
@@ -57,9 +57,9 @@ public static class SampleEndpoints
         return builder;
     }
 
-    private static async Task ExecuteSql(string sql)
+    private static async Task ExecuteSql(IConfiguration configuration, string sql)
     {
-        var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION");
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
         using var connection = new SqlConnection(connectionString);
         await connection.OpenAsync();
         using var command = new SqlCommand(sql, connection);
