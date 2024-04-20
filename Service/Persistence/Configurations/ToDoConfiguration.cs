@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Examples.Service.Persistence.Configurations
 {
-    public class ToDoConfiguration : IEntityTypeConfiguration<ToDo>
+    public class TodoConfiguration : IEntityTypeConfiguration<TodoEntity>
     {
-        public void Configure(EntityTypeBuilder<ToDo> builder)
+        public void Configure(EntityTypeBuilder<TodoEntity> builder)
         {
-            builder.ToTable(DbTable.ToDosTable);
+            builder.ToTable(DbTable.TodosTable);
             builder.HasKey(t => t.Id);
             builder.Property(t => t.Id).ValueGeneratedOnAdd();
         }

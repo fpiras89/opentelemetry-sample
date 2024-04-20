@@ -1,14 +1,13 @@
-using Examples.Service.Domain.Interfaces;
+using Examples.Service.Application.Interfaces;
+using Examples.Service.Application.Services;
 using Examples.Service.Infrastructure;
 using Examples.Service.Persistence;
-using Examples.Service.Persistence.Repositories;
 using Examples.Service.Presentation.Endpoints;
 using Examples.Service.Presentation.GraphQL;
 using GraphQL;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using Serilog.Logfmt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +24,7 @@ builder.Services.AddGraphQL(b => b
     .AddNewtonsoftJson()
     .AddErrorInfoProvider(options => options.ExposeExceptionDetails = true)
     .UseApolloTracing()
+    .UseTelemetry()
     .ConfigureExecutionOptions(options =>
     {
         var logger = options.RequestServices.GetRequiredService<ILogger<Program>>();
@@ -53,24 +53,27 @@ builder.Services.AddCors(o =>
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Host.UseSerilog((context, loggerConfig) => {
+builder.Host.UseSerilog((context, loggerConfig) => 
+{
     loggerConfig.ReadFrom.Configuration(context.Configuration);
-    loggerConfig.WriteTo.Console(
+    /*loggerConfig.WriteTo.Console(
         formatter: new LogfmtFormatter(opt => opt
             //.IncludeAllProperties()
             .OnException(e => e
                 // Log full stack trace
                 .LogStackTrace(LogfmtStackTraceFormat.SingleLine)))
-    );
+    );*/
 });
 
-builder.Services.AddScoped<ToDoRepository>();
+builder.Services.AddScoped<ITodoService, TodoService>();
 builder.Services.AddHostedService<MigrationsHostedService>();
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseCors();
-app.UseSerilogRequestLogging();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapGraphQL("graphql");

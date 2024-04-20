@@ -1,5 +1,5 @@
-﻿using Examples.Service.Domain.Entities;
-using Examples.Service.Domain.Interfaces;
+﻿using Examples.Service.Application.Interfaces;
+using Examples.Service.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Examples.Service.Persistence
@@ -10,7 +10,7 @@ namespace Examples.Service.Persistence
 
         #region DbSets
 
-        public DbSet<ToDo> ToDos { get; set; }
+        public DbSet<TodoEntity> ToDos { get; set; }
 
         #endregion
 

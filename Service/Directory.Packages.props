@@ -3,6 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="AutoMapper" Version="13.0.1" />
     <PackageVersion Include="GraphQL" Version="7.8.0" />
     <PackageVersion Include="GraphQL.Conventions" Version="7.4.0" />
     <PackageVersion Include="GraphQL.NewtonsoftJson" Version="7.8.0" />

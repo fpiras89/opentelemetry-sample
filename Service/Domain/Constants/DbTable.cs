@@ -2,6 +2,6 @@
 {
     public class DbTable
     {
-        public static string ToDosTable = "AppToDos";
+        public static string TodosTable = "AppTodos";
     }
 }

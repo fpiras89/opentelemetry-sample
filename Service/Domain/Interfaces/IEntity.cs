@@ -1,4 +1,4 @@
-﻿namespace Examples.Service.Domain.Entities
+﻿namespace Examples.Service.Domain.Interfaces
 {
     public interface IEntity
     {

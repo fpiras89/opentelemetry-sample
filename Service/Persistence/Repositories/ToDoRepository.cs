@@ -2,7 +2,10 @@
 
 namespace Examples.Service.Persistence.Repositories
 {
-    public class ToDoRepository : Repository<ToDo>
+    public class TodoRepository : Repository<TodoEntity>
     {
+        public TodoRepository(ApplicationDbContext context) : base(context)
+        {
+        }
     }
 }

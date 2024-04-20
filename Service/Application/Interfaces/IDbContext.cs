@@ -1,6 +1,4 @@
-﻿using Examples.Service.Domain.Entities;
-
-namespace Examples.Service.Domain.Interfaces
+﻿namespace Examples.Service.Application.Interfaces
 {
     public interface IDbContext
     {

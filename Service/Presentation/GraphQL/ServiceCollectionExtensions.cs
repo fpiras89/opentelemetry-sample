@@ -23,7 +23,7 @@ namespace Examples.Service.Presentation.GraphQL
             // Add Graph QL Convention Services
             services.AddSingleton(engine);
             services.AddSingleton(schema);
-            services.AddTransient<IDependencyInjector, Injector>();
+            services.AddSingleton<IDependencyInjector, DependencyInjector>();
 
             // Replace GraphQL Server with GraphQL Convention Document Executer
             services.Replace(new ServiceDescriptor(typeof(IDocumentExecuter), typeof(DocumentExecuter), ServiceLifetime.Singleton));

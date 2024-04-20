@@ -1,17 +1,11 @@
-﻿using Examples.Service.Domain.Entities;
-
-namespace Examples.Service.Application.Dtos
+﻿namespace Examples.Service.Application.Dtos
 {
-    public class ToDoDto
+    public class TodoDto
     {
-        public static ToDo ToEntity()
-        {
-            return new ToDo { };
-        }
-
-        public static ToDoDto FromEntity(ToDo todoEntity)
-        {
-            return new ToDoDto { };
-        }
+        public Guid? Id { get; set; } = Guid.NewGuid();
+        public string Text { get; set; } = string.Empty;
+        public bool? Done { get; set; } = false;
+        public DateTime? CreateDate { get; set; } = DateTime.Now;
+        public DateTime? UpdateDate { get; set; } = DateTime.Now;
     }
 }

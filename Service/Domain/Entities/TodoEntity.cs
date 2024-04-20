@@ -1,6 +1,8 @@
-﻿namespace Examples.Service.Domain.Entities
+﻿using Examples.Service.Domain.Interfaces;
+
+namespace Examples.Service.Domain.Entities
 {
-    public class ToDo : IEntity
+    public class TodoEntity : IEntity
     {
         public Guid? Id { get; set; } = Guid.NewGuid();
         public string Text { get; set; } = string.Empty;

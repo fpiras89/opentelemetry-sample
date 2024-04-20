@@ -1,47 +1,49 @@
-﻿using Examples.Service.Domain.Entities;
+﻿using Examples.Service.Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Examples.Service.Persistence.Repositories
 {
-    public class Repository<TEntity>
-        where TEntity : class, IEntity
+    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class, IEntity
     {
-        protected static List<TEntity> entities = new();
+        private readonly ApplicationDbContext dbContext;
+        private readonly DbSet<TEntity> entities;
 
-        public virtual TEntity Add(TEntity entity)
+        public Repository(ApplicationDbContext dbContext)
+        {
+            this.dbContext = dbContext;
+            this.entities = dbContext.Set<TEntity>();
+        }
+
+        public virtual Task<TEntity> AddAsync(TEntity entity)
         {
             entity.Id = entity.Id ?? Guid.NewGuid();
             entity.CreateDate = DateTime.Now;
             entity.UpdateDate = DateTime.Now;
-            entities.Add(entity);
-            return entity;
+            dbContext.Add(entity);
+            return Task.FromResult(entity);
         }
 
-        public virtual TEntity Get(Guid id)
+        public virtual Task<TEntity> GetAsync(Guid id)
         {
-            return entities.Find(x => x.Id == id);
+            return entities.FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public virtual List<TEntity> GetAll()
+        public virtual Task<List<TEntity>> GetAllAsync()
         {
-            return entities;
+            return entities.ToListAsync();
         }
 
-        public virtual TEntity Update(TEntity entity)
+        public virtual Task<TEntity> UpdateAsync(TEntity entity)
         {
-            var entityIndex = entities.FindIndex(x => x.Id == entity.Id);
-            if (entityIndex >= 0)
-            {
-                entity.UpdateDate = DateTime.Now;
-                entities.RemoveAt(entityIndex);
-                entities.Insert(entityIndex, entity);
-            }
-            return entity;
+            dbContext.Attach(entity);
+            dbContext.Update(entity);
+            return Task.FromResult(entity);
         }
 
-        public virtual bool Delete(Guid id)
+        public async virtual Task<bool> DeleteAsync(Guid id)
         {
-            var existingEntity = entities.Find(x => x.Id == id);
-            if (existingEntity is null)
+            var existingEntity = await entities.FirstOrDefaultAsync(x => x.Id == id);
+            if (existingEntity == null)
             {
                 return false;
             }

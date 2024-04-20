@@ -3,11 +3,11 @@ using System.Reflection;
 
 namespace Examples.Service.Presentation.GraphQL
 {
-    internal sealed class Injector : IDependencyInjector
+    internal class DependencyInjector : IDependencyInjector
     {
         private readonly IServiceProvider provider;
 
-        public Injector(IServiceProvider provider)
+        public DependencyInjector(IServiceProvider provider)
         {
             this.provider = provider;
         }

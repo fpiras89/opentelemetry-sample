@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" />
     <PackageReference Include="GraphQL" />
     <PackageReference Include="GraphQL.Conventions" />
     <PackageReference Include="GraphQL.NewtonsoftJson" />

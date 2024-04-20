@@ -22,7 +22,7 @@ namespace Examples.Service.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Examples.Service.Domain.Entities.ToDo", b =>
+            modelBuilder.Entity("Examples.Service.Domain.Entities.TodoEntity", b =>
                 {
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
@@ -42,7 +42,7 @@ namespace Examples.Service.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AppToDos", (string)null);
+                    b.ToTable("AppTodos", (string)null);
                 });
 #pragma warning restore 612, 618
         }
