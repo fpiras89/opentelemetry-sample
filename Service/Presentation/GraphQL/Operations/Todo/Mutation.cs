@@ -12,8 +12,9 @@ namespace Examples.Service.Presentation.GraphQL
             [Inject] ITodoService todoService, [Inject] ILogger<Mutation> logger,
             TodoInput todo)
         {
-            logger.LogInformation("Adding todo: {todo}", todo);
-            return await todoService.AddAsync(todo.ToDto());
+            logger.LogInformation("Adding todo: {@todo}", todo);
+            var result = await todoService.AddAsync(todo.ToDto());
+            return result;
         }
 
         public bool Nope() 

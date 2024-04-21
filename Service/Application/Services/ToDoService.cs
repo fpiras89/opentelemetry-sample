@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Examples.Service.Application.Dtos;
 using Examples.Service.Application.Interfaces;
+using Examples.Service.Application.Metrics;
 using Examples.Service.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +12,13 @@ namespace Examples.Service.Application.Services
     {
         private readonly IDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly TodoMetrics todoMetrics;
 
-        public TodoService(IDbContext dbContext, IMapper mapper)
+        public TodoService(IDbContext dbContext, IMapper mapper, TodoMetrics todoMetrics)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.todoMetrics = todoMetrics;
         }
 
         public async Task<TodoDto> AddAsync(TodoDto todo)
@@ -25,6 +28,9 @@ namespace Examples.Service.Application.Services
             todo.UpdateDate = DateTime.Now;
             dbContext.Add(mapper.Map<TodoEntity>(todo));
             await dbContext.SaveChangesAsync();
+
+            todoMetrics.TodoCreated();
+
             return todo;
         }
 
@@ -58,6 +64,9 @@ namespace Examples.Service.Application.Services
             dbTodo = mapper.Map(todo, dbTodo);
             dbContext.Update(dbTodo);
             await dbContext.SaveChangesAsync();
+
+            if (dbTodo.Done.Value) todoMetrics.TodoDone();
+
             return mapper.Map<TodoDto>(dbTodo);
         }
 
@@ -65,6 +74,9 @@ namespace Examples.Service.Application.Services
         {
             dbContext.Remove(await dbContext.Query<TodoEntity>().FirstOrDefaultAsync(x => x.Id == id));
             await dbContext.SaveChangesAsync();
+
+            todoMetrics.TodoDeleted();
+
             return true;
         }
 

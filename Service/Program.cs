@@ -1,4 +1,5 @@
 using Examples.Service.Application.Interfaces;
+using Examples.Service.Application.Metrics;
 using Examples.Service.Application.Services;
 using Examples.Service.Infrastructure;
 using Examples.Service.Persistence;
@@ -8,6 +9,7 @@ using GraphQL;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Diagnostics.Metrics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +74,9 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>();
+
+builder.Services.AddMetrics();
+builder.Services.AddSingleton<TodoMetrics>();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();

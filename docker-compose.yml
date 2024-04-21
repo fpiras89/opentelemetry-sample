@@ -24,15 +24,12 @@ services:
       - otel-dotnet.env # enable OpenTelemetry .NET Automatic Instrumentation
     environment:
       ASPNETCORE_URLS: http://*:5000/
-      DB_CONNECTION: "Server=sqlserver,1433;User=sa;Password=Password1!;TrustServerCertificate=True;"
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;User=sa;Password=Password1!;Database=sample;TrustServerCertificate=True;"
       # OpenTelemetry environmental variables:
-      OTEL_SERVICE_NAME: "service"
+      OTEL_SERVICE_NAME: "examples.service"
       OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318"
-      OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES: "Examples.Service"
-      OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES: "Examples.Service"
-      OTEL_DOTNET_AUTO_LOGS_CONSOLE_EXPORTER_ENABLED: "false"
-      OTEL_DOTNET_AUTO_LOGS_INSTRUMENTATION_ENABLED: "false"
+      OTEL_DOTNET_AUTO_TRACES_ADDITIONAL_SOURCES: "Examples.*"
+      OTEL_DOTNET_AUTO_METRICS_ADDITIONAL_SOURCES: "Examples.*"
     ports:
       - "5000:5000"
     depends_on:
