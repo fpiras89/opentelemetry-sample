@@ -10,7 +10,7 @@ namespace Examples.Service.Application.Metrics
 
         public TodoMetrics(IMeterFactory meterFactory)
         {
-            var meter = meterFactory.Create("Todo");
+            var meter = meterFactory.Create(typeof(TodoMetrics).FullName);
             todoCreatedCounter = meter.CreateCounter<int>("todo.created", description: "Number of created todos");
             todoDoneCounter = meter.CreateCounter<int>("todo.done", description: "Number of done todos");
             todoDeletedCounter = meter.CreateCounter<int>("todo.deleted", description: "Number of deleted todos");  
