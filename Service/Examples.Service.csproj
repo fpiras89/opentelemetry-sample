@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" />
     <PackageReference Include="GraphQL" />
-    <PackageReference Include="GraphQL.Conventions" />
     <PackageReference Include="GraphQL.NewtonsoftJson" />
     <PackageReference Include="GraphQL.Server.Transports.AspNetCore" />
     <PackageReference Include="GraphQL.Server.Ui.Playground" />
@@ -34,6 +33,10 @@
     <PackageReference Include="Serilog.Logfmt" />
     <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
     <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Presentation\GraphQL\Operations\" />
   </ItemGroup>
 
 </Project>

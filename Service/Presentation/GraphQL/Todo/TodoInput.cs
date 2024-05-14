@@ -1,9 +1,8 @@
 ﻿using Examples.Service.Application.Dtos;
-using GraphQL.Conventions;
+using GraphQL;
 
-namespace Examples.Service.Presentation.GraphQL
+namespace Examples.Service.Presentation.GraphQL.Todo
 {
-    [InputType]
     public class TodoInput : TodoDto
     {
         [Ignore]

@@ -23,6 +23,7 @@ builder.Services.AddScoped<IDbContext>(sp => sp.GetRequiredService<ApplicationDb
 builder.Services.AddRouting();
 
 builder.Services.AddGraphQL(b => b
+    .AddAutoSchema<Query>(configure => configure.WithMutation<Mutation>())
     .AddNewtonsoftJson()
     .AddErrorInfoProvider(options => options.ExposeExceptionDetails = true)
     .UseApolloTracing()
@@ -35,8 +36,7 @@ builder.Services.AddGraphQL(b => b
             logger.LogError("GraphQL Unhandled Exception: {ErrorMessage} | {OriginalExceptionMessage}", ctx.ErrorMessage, ctx.OriginalException.Message);
             return Task.CompletedTask;
         };
-    }))
-    .AddGraphQLConventions<Query, Mutation>();
+    }));
 
 builder.Services.Configure<KestrelServerOptions>(options =>
 {
